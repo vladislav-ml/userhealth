@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load sidebar %}
+
+{% block title %}{{ title }}{{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="auth-wraper">
+    <div class="auth-main center">
+        <div class="auth-left">
+            <h1>{{ title }}</h1>
+            <form action="" method="POST" class="form-auth form-delete">
+                {% csrf_token %}
+                <p>Вы действительно хотите удалить аккаунт пользователя - "{{ user.email }}"?</p>
+                <p><input type="submit" value="Подтвердить"></p>
+            </form>
+        </div>
+        <div class="sidebar">
+            {% get_sidebar %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% load menu %}
+
+<header>
+	<div class="header-main center">
+		<div class="header-logo">
+			<p class="header-title"><a href="{% url 'home' %}">Userhealth.ru</a></p>
+			<p class="header-desc">Здоровье, питание, диета, спорт</p>
+		</div>
+		<div class="header-market">
+			<div class="users-auth">
+				{% if user.is_authenticated %}
+					<p>
+						<a href="{% url 'auth:profile' %}">{{ user.email }}</a>
+						<i>|</i>
+						<a href="{% url 'auth:logout' %}">Выйти</a>
+					</p>
+				{% else %}
+					<p>
+						<a href="{% url 'auth:login' %}">Войти</a>
+						<i>|</i>
+						<a href="{% url 'auth:register' %}">Регистрация</a>
+					</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</header>
+<div class="after-desctop-menu"></div>
+
+<nav>
+	<div class="nav-in center">
+	<a href="#" class="link-menu"></a>
+		<div class="nav-left">
+			<div class="mobil-wrap-menu">
+				<p class="close-menu"></p>
+		{% show_menu 1 %}
+    </div>
+	</div>	
+	<div class="nav-right">
+        <form action="{% url 'search' %}" method="get">
+            <input type="text" name="s" placeholder="Поиск по сайту">
+            <input type="submit" value="&nbsp;">
+        </form>
+		</div>
+	</div>
+</nav>

@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} {{ block.super }}{% endblock %}
+{% block description %}{{ post.description }}{% endblock %}
+{% block content %}
+<div class="content-wraper">
+	<div class="content-main center">
+		<div class="bread-crumbs">
+			<a href="{% url 'home' %}">Главная</a><span>/</span><a href="{{ post.category.get_absolute_url }}">{{ post.category }}</a><span>/</span><em>{{ post.title }}</em>
+		</div>
+		<article>
+			<div class="single-img">
+                {% if post.image %}
+				    <img src="{{ post.image.url }}" alt="">
+                {% endif %}				
+                <div class="single-img-info">
+					<h1>{{ post.title }}.</h1>
+					<div class="single-img-icons">
+						<p><a href="{{ post.category.get_absolute_url }}">{{ post.category }}</a></p>
+						<p class="single-views"><span></span>{{ post.views }}</p>
+						<p class="single-coment"><span></span>{{ post.cnt_comments }}</p>
+					</div>
+				</div>
+			</div>
+			<div class="single-txt">
+				{{ post.content|safe }}
+                <p class="p-info-content">Статья носит&nbsp;информационный характер.</p>				
+			</div>
+            <div class="single-tags">
+                {% if post.cnt_tags %}
+                    <p>Теги:
+                    {% for tag in post.tags.all %}
+                        <a href="{{ tag.get_absolute_url }}">{{ tag.title }}</a>
+                    {% endfor %}
+                {% endif %}
+                </p>
+            </div>
+			<div class="single-shared">
+				<div class="single-related">
+                    {% if related_posts %}
+					    <p class="related-link">Похожие статьи</p>
+                    {% endif %}
+				</div>
+				<div class="single-rating">
+                    <form action="{% url 'rating' %}" method="POST" class="form-rating">
+                        {% csrf_token %}
+                        <input type="hidden" name="post" value="{{ post.pk }}">
+                        <span class="rating">
+                        {% for k,v in form_stars.fields.rating.choices %}
+                            <input type="radio" name="rating" value="{{ v }}" id="rating{{ v }}" {% if current_rating == k %}checked="checked"{% endif %}>
+                            <label for="rating{{ v }}">{{ k }}</label>
+                        {% endfor %}
+                        </span>
+                    </form>
+                    <div class="single-rating-mes"></div>
+                </div>
+				<div class="single-like">								
+				</div>
+			</div>
+
+
+
+				<div class="related-products">
+					<div class="related-products-in">
+						{% for item in related_posts %}
+                            {% if forloop.counter0 < 3 %}
+                                <div class="posts-item">
+                                    <a href="{{ item.get_absolute_url }}" class="posts-img">
+                                        {% if item.image %}
+                                            <img src="{{ item.image.url }}" alt="">
+                                        {% else %}
+                                            <img src="{% static 'images/no-image.jpg' %}" alt="">
+                                        {% endif %}			</a>
+                                    <div class="posts-wraper-txt">
+                                        <p class="post-title"><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></p>
+                                        <div class="post-txt">
+                                            {{ item.content|striptags|truncatewords:12 }}								
+                                        </div>
+                                        <div class="stars-wraper">					
+                                            <div class="stars-right">
+                                                <a href="{{ item.get_absolute_url }}" class="link-more">Подробнее</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+					</div>
+				</div>
+		</article>
+
+        <!-- start comment block  -->
+        <div class="coment-block">
+            {% if user.is_authenticated %}
+                <p class="title-coment">Добавить комментарий</p>
+                <form action="{{ post.get_absolute_url }}" method="POST" class="coment-form" id="form_coment">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <p {% if field.errors %}class="block-error"{% endif %}>
+                        {{ field }}
+                        <span class="help-txt">{{ field.help_text }}</span>
+                        {% for error in field.errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    {% endfor %}
+                    <input type="hidden" name="parent"  value="">
+                    <p><input type="submit" value="Добавить"></p>
+                </form>
+            {% else %}
+                <p class="block-no-auth">Для добавления комментария <a href="{% url 'auth:login' %}">авторизуйтесь</a>.</p>
+            {% endif %}
+
+
+            {% if post.comment_set.exists %}
+                <div class="coment-display">
+                    <p class="title-coment">Комментарии:</p>
+                    {% for coment in post.get_review_sort %}
+                        <div class="coment-item">
+                            <div class="coment-left">
+                                {% if coment.object.user.photo %}
+                                    <img src="{{ coment.object.user.photo.url }}" alt="">
+                                {% else %}
+                                    <img src="{% static 'images/user.png' %}" alt="">
+                                {% endif %}
+                            </div>
+                            <div class="coment-right">
+                                <div class="coment-top">
+                                    <p>{{ coment.object.user|get_info_user }}</p>
+                                    <span>{{ coment.object.created_at|date:'d.m.Y' }}</span>
+                                </div>
+                                {{ coment.object.text|linebreaks }}
+
+                                {% if coment.object.user != request.user %}
+                                <p class="block-link-answer"><a href="#form_coment" onclick="add_coment('{{ coment.object.user|get_info_user }}', '{{ coment.object.pk }}')" class="link-answer">Ответить</a></p>
+                                {% endif %}
+
+                                {% for child in coment.child %}
+                                    <div class="coment-item">
+                                        <div class="coment-left">
+                                            {% if child.0.user.photo %}
+                                                <img src="{{ child.0.user.photo.url }}" alt="">
+                                            {% else %}
+                                                <img src="{% static 'images/user.png' %}" alt="">
+                                            {% endif %}
+                                        </div>
+                                        <div class="coment-right">
+                                            <div class="coment-top">
+                                                <p>{{ child.0.user|get_info_user }}</p>
+                                                <span>{{ child.0.created_at|date:'d.m.Y' }}</span>
+                                            </div>
+                                            {{ child.0.text|linebreaks }}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+        <!-- end comment block -->
+
+	</div>
+</div>
+
+{% if related_posts.count > 3 %}
+    <!-- start block posts -->
+    <div class="rating-wraper">
+        <div class="rating-main center">
+            <h1 class="title-h2">Популярное</h1>
+
+            <div class="rating-bottom">
+                {% for item in related_posts %}	
+                    {% if forloop.counter0 >= 3 %}		
+                        <a href="{{ item.get_absolute_url }}" class="rating-top-in">
+                            {% if item.image %}
+                                <img src="{{ item.image.url }}" alt="">
+                            {% else %}
+                                <img src="{% static 'images/no-image.jpg' %}" alt="">
+                            {% endif %}				
+                            <div class="rating-position">
+                                <h3>{{ item.title }}</h3>
+                                <div class="rating-txt">
+                                    {{ item.content|striptags|truncatewords:12 }}
+                                </div>
+                                <p class="more">Подробнее &raquo;</p>
+                            </div>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+
+            </div>			
+        </div>
+    </div>
+    <!-- end block posts -->
+{% endif %}
+<script>
+    function add_coment(author, id){
+        document.querySelectorAll("form input[name=parent]")[0].value = id;
+        document.querySelectorAll("form textarea[name=text]")[0].innerHTML =  author + ", ";
+    }
+</script>
+{% endblock %}
+

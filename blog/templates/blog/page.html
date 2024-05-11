@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} {{ block.super }}{% endblock %}
+{% block description %}{{ post.description }}{% endblock %}
+{% block content %}
+<div class="content-wraper">
+	<div class="content-main center">
+		<div class="bread-crumbs">
+			<a href="{% url 'home' %}">Главная</a><span>/</span><em>{{ post.title }}</em>
+		</div>
+		<article class="article-page">
+
+			<h1 class="page-title">{{ post.title }}</h1>
+
+			<div class="single-txt">
+				{{ post.content|safe }}				
+			</div>
+		</article>
+	</div>
+</div>
+
+{% endblock %}

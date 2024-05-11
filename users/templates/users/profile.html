@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load sidebar %}
+{% load static %}
+
+{% block title %}{{ title }}{{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="auth-wraper">
+    <div class="auth-main center">
+        <div class="auth-left">
+            <h1>{{ title }}</h1>
+            <div class="profile-image">
+                {% if user.photo %}
+                    <img src="{{ user.photo.url }}" alt="">
+                {% else %}
+                    <img src="{% static 'images/default_avatar.jpg' %}" alt="">
+                {% endif %}
+            </div>
+            <form action="{% url 'auth:profile' %}" method="POST" class="form-auth" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+                <div class="field-error">{{ form.non_field_errors }}</div>
+                {% for field in form %}
+                    <div class="form-div">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <span class="help-text">{{ field.help_text }}</span>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <span class="field-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                <p><input type="submit" value="Обновить"></p>
+                <p><a href="{% url 'auth:password-change' %}" class="password-change">Обновить пароль</a></p>
+                <p><a href="{% url 'auth:delete' %}" class="delete-user">Удалить аккаунт</a></p>
+            </form>
+        </div>
+        <div class="sidebar">
+            {% get_sidebar %}
+        </div>
+    </div>
+</div>
+{% endblock %}

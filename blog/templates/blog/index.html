@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}{{ main_page.title }} {{ block.super }}{% endblock %}
+{% block description %}{{ main_page.description }}{% endblock %}
+
+{% block content %}
+<!-- start block rating-wrapr -->
+<div class="rating-wraper">
+	<div class="rating-main center">
+		<h1 class="title-h2">Здоровье, питание, диета, спорт</h1>
+
+	<div class="rating-bottom">	
+		{% for post in posts %}
+			{%  if forloop.counter0  < 4 %}
+				<a href="{{ post.get_absolute_url }}" class="rating-top-in">
+					{% if post.image %}
+						<img src="{{ post.image.url }}" alt="">
+					{% else %}
+						<img src="{% static 'images/no-image.jpg' %}" alt="">
+					{% endif %}				
+					<div class="rating-position">
+						<h3>{{ post.title }}</h3>
+						<div class="rating-txt">
+							{{ post.content|striptags|truncatewords:12 }}					</div>
+						<p class="more">Подробнее &raquo;</p>
+					</div>
+				</a>
+			{% endif %}
+		{% endfor %}
+		</div>			
+	</div>
+</div>
+<!-- end block rating -->
+
+<!-- start block categories -->
+<div class="cat-wraper">
+	<div class="cat-main center">
+		<h2 class="title-h2">Наши категории</h2>
+		<div class="cat-in">
+			{% for cat in categories %}
+				<a href="{{ cat.get_absolute_url }}" class="cat-item">
+					{% if cat.image %}
+						<img src="{{ cat.image.url }}" alt="">
+					{% else %}
+						<img src="{% static 'images/no-image.jpg' %}" alt="">
+					{% endif %}	
+					<div>
+						<p>{{ cat.title }} &raquo;</p>
+					</div>
+				</a>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+<!-- end block categories -->
+
+<!-- start block one category -->
+<div class="goods-wraper">
+	<div class="goods-main center">
+		<h2 class="title-h2">Здоровье</h2>
+		<div class="goods-in">
+		    {% for item in health %}
+				<div class="goods-item">
+					<div class="goods-top">
+						<p>{{ item.cnt_comment|show_word_review }}</p>
+					</div>
+					<a href="{{ item.get_absolute_url }}" class="goods-img">
+						{% if item.image %}
+							<img src="{{ item.image.url }}" alt="">
+						{% else %}
+							<img src="{% static 'images/no-image.jpg' %}" alt="">
+						{% endif %}	
+					</a>
+					<p class="post-title"><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></p>
+					<div class="post-txt">
+						{{ post.content|striptags|truncatewords:12 }}				
+					</div>
+					<div class="stars-wraper">					
+						<div class="stars-right">
+							<a href="{{ item.get_absolute_url }}" class="link-more">Подробнее</a>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+
+		</div>
+	</div>
+</div>
+<!-- end block one cat -->
+
+<!-- start block one cat -->
+<div class="news-wraper">
+	<div class="news-main center">
+		<h2 class="title-h2">Новые статьи</h2>
+		<div class="news-in">
+			{% for post in posts %}
+				{% if forloop.counter0 >= 4 %}
+					<div class="news-item">
+						<a href="{{ post.get_absolute_url }}" class="goods-img">
+							{% if post.image %}
+								<img src="{{ post.image.url }}" alt="">
+							{% else %}
+								<img src="{% static 'images/no-image.jpg' %}" alt="">
+							{% endif %}				
+						</a>
+						<p class="post-title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></p>
+						<div class="post-txt">
+							{{ post.content|striptags|truncatewords:12 }}			
+						</div>
+						<div class="stars-wraper">					
+							<div class="stars-right">
+								<a href="{{ post.get_absolute_url }}" class="link-more">Подробнее</a>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+			{% endfor %}
+
+		</div>
+	</div>
+</div>
+<!-- end block one cat-->
+
+
+<div class="index-wraper">
+	<div class="index-main center">
+		<div class="inex-main-txt single-txt">
+			{{ main_page.content }}
+		</div>
+	</div>
+</div>
+
+{% endblock %}

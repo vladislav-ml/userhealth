@@ -1,0 +1,9 @@
+[flake8]
+
+exclude = 
+    migrations
+    venv
+
+ignore = E501
+         E701
+         E722

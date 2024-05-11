@@ -1,0 +1,12 @@
+<ul  class="menu">
+    {% if number_menu == 1 %}
+        <li {% if request.path == '/' %}class="current-menu-item"{% endif %}><a href="{% url 'home' %}">Главная</a></li>
+    {% endif %}
+    {% for cat in category %}
+        <li {% if request.path == cat.get_absolute_url %}class="current-menu-item"{% endif %}><a href="{{ cat.get_absolute_url }}">{{ cat.title }}</a></li>
+    {% endfor %}
+    {% if number_menu == 2 %}
+        <li><a href="{% url 'contact' %}">Контакты</a></li>
+    {% endif %}
+
+</ul>

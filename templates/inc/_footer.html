@@ -1,0 +1,18 @@
+{% load menu %}
+
+<footer>
+	<div class="footer-main center">
+		<div class="footer-logo">
+			<p class="footer-title">Userhealth.ru</p>
+			<p class="header-desc">Здоровье, питание, диета, спорт</p>
+		</div>
+		<div class="footer-menu">
+            {% show_menu 2 %}
+        </div>
+		<div class="footer-social">
+		</div>
+	</div>
+</footer>
+<div class="footer-copy">
+	<p>&copy; {% now 'Y' %} Все права защищены</p>
+</div>

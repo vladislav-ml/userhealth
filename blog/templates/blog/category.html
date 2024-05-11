@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.title }} {{ block.super }}{% endblock %}
+{% block description %}{{ category.description }}{% endblock %}
+{% block content %}
+<div class="content-wraper">
+	<div class="content-main center">
+                <div class="bread-crumbs">
+                    <a href="{% url 'home' %}">Главная</a><span>/</span><em>Категория - {{ category.title }}</em>
+                </div>
+		        <h1 class="title-cat">{{ category.title }}</h1>
+				
+                <div class="cat-in">
+
+                    {% for post in posts %}
+                        <div class="cat-item">
+                            <div class="cat-left">
+                                <a href="{{ post.get_absolute_url }}">
+                                    {% if post.image %}
+                                        <img src="{{ post.image.url }}" alt="">
+                                    {% else %}
+                                        <img src="{% static 'images/no-image.jpg' %}" alt="">
+                                    {% endif %}	
+                                </a>
+                            </div>				
+                            <div class="cat-right">
+                                <div class="cat-top">
+                                    <p class="cat-date"><span></span>{{ post.created_at|date:'d.m.Y' }}</p>
+                                    <p class="cat-views"><span></span>{{ post.views }}</p>
+                                <p class="cat-coment"><span></span>{{ post.cnt_comment }}</p>
+                                </div>
+                                <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+                                <div class="cat-txt">
+                                    {{ post.content|striptags|truncatewords:12 }}				</div>
+                                <p class="cat-more"><a href="{{ post.get_absolute_url }}">Читать дальше »</a></p>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="p-empty">Нет записей</p>
+                    {% endfor %}
+
+			    </div>
+				
+            {% include 'inc/_pagination.html' %}
+	</div>
+</div>
+{% endblock %}

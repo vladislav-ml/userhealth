@@ -1,0 +1,29 @@
+{% if page_obj.has_other_pages %}
+<div class="pager">
+    {% if page_obj.has_previous %}
+        <a class="next page-numbers" 
+        href="?{{ s }}page={{ page_obj.previous_page_number }}"><span class="page-arrow page-prev">«</span></a>
+        <a class="page-numbers" href="?{{ s }}page=1">1</a>
+        {% if page_obj.number|add:-3 >= 2%}
+            <span class="page-numbers dots">...</span>
+        {% endif %}
+    {% endif %}
+
+    {% for page in page_obj.paginator.page_range %}
+        {% if page == page_obj.number %}
+            <span aria-current="page" class="page-numbers current">{{ page }}</span>
+        {% elif page > page_obj.number|add:-3  and page < page_obj.number|add:3 and page != 1 and page != page_obj.paginator.num_pages %}
+            <a class="page-numbers" href="?{{ s }}page={{ page }}">{{ page }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        {% if page_obj.number|add:3 < page_obj.paginator.num_pages %}
+            <span class="page-numbers dots">...</span>
+        {% endif %}
+        <a class="page-numbers" href="?{{ s }}page={{ page_obj.paginator.num_pages}}">{{ page_obj.paginator.num_pages }}</a>
+        <a class="next page-numbers" href="?{{ s }}page={{ page_obj.next_page_number }}"><span class="page-arrow page-next">»</span></a>
+    {% endif %}
+
+</div>
+{% endif %}

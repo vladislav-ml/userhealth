@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} {{ block.super }}{% endblock %}
+{% block description %}{{ post.description }}{% endblock %}
+{% block content %}
+<div class="content-wraper">
+	<div class="content-main center">
+		<div class="bread-crumbs">
+			<a href="{% url 'home' %}">Главная</a><span>/</span><em>{{ title }}</em>
+		</div>
+
+        <div class="block-form">
+            <form action="{{ post.get_absolute_url }}" method="POST" class="contact-form">
+                    {% csrf_token %}
+                    <span class="field-error">{{ form.non_field_errors }}</span>
+                    {% for field in form %}
+                        <p class="{{ field|add_class_error }}">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% for error in field.errors %}
+                                <span class="field-error">{{ error }}</span>
+                            {% endfor %}
+                        </p>
+                    {% endfor %}
+                    <p><input type="submit" name="send-form" value="Отправить"></p>
+            </form>
+        </div>
+
+	</div>
+</div>
+
+{% endblock %}
